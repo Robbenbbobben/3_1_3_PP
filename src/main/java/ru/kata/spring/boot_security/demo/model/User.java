@@ -25,13 +25,12 @@ public class User implements UserDetails {
     @Column(name ="password")
     private String password;
     @Transient
-    private boolean isActive;
+    private boolean isActive = true;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name="users_roles",
             joinColumns = @JoinColumn(name ="user_id"),
             inverseJoinColumns = @JoinColumn(name ="role_id"))
-    //@OnDelete(action = OnDeleteAction.CASCADE)
     private Collection <Role> roles = new HashSet<>();
 
     public User() {
@@ -83,9 +82,7 @@ public class User implements UserDetails {
     public void setRoles(Role roles) {
         this.roles.add(roles);
     }
-//    public void setRoles(Optional<Role> roles) {
-//        this.roles.add(roles.orElse(null));
-//    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -145,12 +142,11 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return age == user.age && Objects.equals(name, user.name) && Objects.equals(email, user.email)
-                && Objects.equals(password, user.password);
+        return id == user.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, age, email, password)*31;
+        return Objects.hash(id) * 31;
     }
 }

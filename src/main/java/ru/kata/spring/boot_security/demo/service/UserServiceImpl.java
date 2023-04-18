@@ -19,10 +19,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private UsersRepo usersRepo;
     private RoleRepo roleRepo;
-    @Autowired
-    public UserServiceImpl(UsersRepo usersRepo, RoleRepo roleRepo) {
+    private PasswordEncoder passwordEncoder;
+@Autowired
+    public UserServiceImpl(UsersRepo usersRepo, RoleRepo roleRepo, PasswordEncoder passwordEncoder) {
         this.usersRepo = usersRepo;
         this.roleRepo = roleRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,7 +39,6 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void save(User user) {
-        PasswordEncoder passwordEncoder =new BCryptPasswordEncoder(12);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(roleRepo.findById(2).orElse(null));
         usersRepo.save(user);

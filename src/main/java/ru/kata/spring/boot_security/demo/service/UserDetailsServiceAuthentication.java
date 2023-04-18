@@ -26,22 +26,14 @@ public class UserDetailsServiceAuthentication implements UserDetailsService {
         return usersRepo.findByEmail(email);
     }
 
-    private Collection<?extends GrantedAuthority> mapRolesToAthorities(Collection<Role> roles) {
-        return roles.stream().map(role ->
-                        new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-    }
+
     @Override
-    @Transactional
+
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = findByEmail(email);
         if (user == null) {
             throw  new UsernameNotFoundException(String.format("User '%s' not found", email));
         }
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                mapRolesToAthorities(user.getRoles())
-        );
+        return user;
     }
-
 }
